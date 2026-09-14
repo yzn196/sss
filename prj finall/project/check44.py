@@ -69,7 +69,7 @@ def calculate_score(pss):
         score = 1
     return max(score, 0)
 
-def check_password_strength(pss):
+def check_password_strength11(pss):
     score = calculate_score(pss)
     if score >= 5:
         return "Very strong password"
@@ -84,7 +84,7 @@ def check_password_strength(pss):
 
 
 
-def estimate_crack_time(pss):
+def estimate_crack_time11(pss):
     if not pss:
         return "No password provided"
 
@@ -142,7 +142,7 @@ def estimate_crack_time(pss):
 
 
 
-q = check_password_strength(check_password)
-w = estimate_crack_time(check_password)
+q = check_password_strength11(check_password)
+w = estimate_crack_time11(check_password)
 print(q)
 print(w)
