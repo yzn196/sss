@@ -66,7 +66,7 @@ def calculate_score(pss):
     elif repeat_ratio < 0.5:
         score -= 1  
     else:
-        score = 1
+        score -= 0
     return max(score, 0)
 
 def check_password_strength11(pss):
