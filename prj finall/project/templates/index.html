@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Security Tool</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .password-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 45px;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-btn:hover {
+            background: transparent;
+            color: #38bdf8;
+        }
+
+        input[type="text"], input[type="password"], input[type="number"] {
+            flex: 1;
+            padding: 12px 16px;
+            background-color: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #38bdf8;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0369a1;
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            background-color: #334155;
+            border: 1px solid #475569;
+        }
+
+        .copy-btn:hover {
+            background-color: #475569;
+        }
+
+        .refresh-btn {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            background-color: #334155;
+            border: 1px solid #475569;
+            margin-bottom: 12px;
+        }
+
+        .refresh-btn:hover {
+            background-color: #475569;
+        }
+
+        .result-box {
+            background-color: #0f172a;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid #334155;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #94a3b8;
+            gap: 12px;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .generated-password {
+            font-family: monospace;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            color: #4ade80;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Card 1: Check Password -->
+    <div class="card">
+        <h2>🔒 Check Password Strength</h2>
+        <div class="input-group">
+            <div class="password-wrapper">
+                <input type="password" id="passwordInput" placeholder="Enter password to test...">
+                <button type="button" class="toggle-btn" onclick="togglePasswordVisibility()" id="toggleBtn" title="Show/Hide Password">👁️</button>
+            </div>
+            <button onclick="checkPassword()">Check</button>
+        </div>
+        <div class="result-box">
+            <div class="result-item">
+                <span>Strength:</span>
+                <span id="strengthResult" class="result-value">-</span>
+            </div>
+            <div class="result-item">
+                <span>Estimated Crack Time:</span>
+                <span id="crackTimeResult" class="result-value">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Generate Password -->
+    <div class="card">
+        <h2>⚡ Generate Strong Password</h2>
+        <div class="input-group">
+            <input type="number" id="lengthInput" value="16" min="8" max="50" placeholder="Length (8-50)">
+            <button onclick="generatePassword()">Generate</button>
+        </div>
+        <div class="result-box">
+            <div class="result-item">
+                <span>Generated Password:</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="generatedResult" class="result-value generated-password">-</span>
+                    <button class="copy-btn" onclick="copyPassword()" id="copyBtn">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3: Saved History (SQLite) -->
+    <div class="card">
+        <h2>📜 Password History</h2>
+        <button class="refresh-btn" onclick="loadHistory()">Refresh History</button>
+        <div class="result-box" id="historyContainer">
+            <div class="result-item">Loading history...</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // 1. إظهار وإخفاء كلمة السر
+    function togglePasswordVisibility() {
+        const input = document.getElementById('passwordInput');
+        const btn = document.getElementById('toggleBtn');
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.innerText = '🙈';
+        } else {
+            input.type = 'password';
+            btn.innerText = '👁️';
+        }
+    }
+
+    // 2. نسخ كلمة السر المولدة
+    async function copyPassword() {
+        const passwordText = document.getElementById('generatedResult').innerText;
+        if (!passwordText || passwordText === '-') return;
+
+        try {
+            await navigator.clipboard.writeText(passwordText);
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.innerText = 'Copied!';
+            setTimeout(() => {
+                copyBtn.innerText = 'Copy';
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+    }
+
+    // 3. فحص كلمة السر + تحديث السجل
+    async function checkPassword() {
+        const password = document.getElementById('passwordInput').value;
+        if (!password) return;
+
+        try {
+            const response = await fetch('/api/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: password })
+            });
+            const data = await response.json();
+            
+            document.getElementById('strengthResult').innerText = data.strength || '-';
+            document.getElementById('crackTimeResult').innerText = data.crack_time || '-';
+            
+            // تحديث قائمة السجل بعد الإضافة
+            loadHistory();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    // 4. توليد كلمة السر + تحديث السجل
+    async function generatePassword() {
+        const length = parseInt(document.getElementById('lengthInput').value);
+
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ length: length })
+            });
+            const data = await response.json();
+            
+            document.getElementById('generatedResult').innerText = data.password || '-';
+            
+            // تحديث قائمة السجل بعد التوليد
+            loadHistory();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    // 5. استرجاع وعرض سجل كلمات السر المخزنة في SQLite
+    async function loadHistory() {
+        try {
+            const response = await fetch('/api/history');
+            const historyData = await response.json();
+            
+            const container = document.getElementById('historyContainer');
+            container.innerHTML = '';
+
+            if (!historyData || historyData.length === 0) {
+                container.innerHTML = '<div class="result-item">No saved history yet.</div>';
+                return;
+            }
+
+            historyData.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'result-item';
+                historyItem.style.borderBottom = '1px solid #334155';
+                historyItem.style.paddingBottom = '8px';
+                
+                historyItem.innerHTML = `
+                    <div>
+                        <span class="generated-password" style="font-size: 0.95rem;">${item.password}</span>
+                        <br>
+                        <small style="color: #64748b;">${item.created_at}</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="result-value">${item.strength}</span>
+                        <br>
+                        <small style="color: #94a3b8;">Length: ${item.length} | Crack: ${item.crack_time}</small>
+                    </div>
+                `;
+                container.appendChild(historyItem);
+            });
+        } catch (error) {
+            console.error('Error loading history:', error);
+        }
+    }
+
+    // تحميل السجل تلقائياً عند فتح الصفحة
+    window.onload = loadHistory;
+</script>
+
+</body>
+</html>
+
+
+

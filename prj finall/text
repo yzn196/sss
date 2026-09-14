@@ -1,0 +1,12 @@
+check_password = input("Enter a password to check(you should enter at least 8 characters): ")
+q = check_password_strength(check_password)
+print(q)
+
+crack_time = estimate_crack_time(check_password)
+print(crack_time)
+
+
+
+
+w = generate_strong_password()
+print("Generated strong password:", w)
