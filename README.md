@@ -1,0 +1,2 @@
+بالمشروع هذا عشان تشوف كيف اشتغل الweb فتدخل على folder(project) وبعدها تسوي run ل app.py ويفتح معاك الweb وملف ال check44.py هذا الملف قبل التعديل مخليه وبعد التعديل واني اخليه ادق بالاجابه ويعطيك اجابه دقيقه عندك ملفين checker_and_crack_time.py & generate_strong_password.py
+وبعدين عندك ال frontend الي هو ملف index.html وبعدين عندك اخر شي الربط بين ال front end & back end وتشغيل الويب كامل ال هو ملف app.py .-.
